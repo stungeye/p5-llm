@@ -29,6 +29,7 @@ export default class GuiWindow {
 
     this.isTitleEditing = false;
     this.input = null;
+    this.clickables = [];
     this.titleBar = new GuiWindowTitleBar(
       p,
       x,
@@ -36,8 +37,10 @@ export default class GuiWindow {
       width,
       35,
       p.color(200),
-      title
+      title,
+      15
     );
+    this.registerClickable(this.titleBar);
   }
 
   display() {
@@ -56,7 +59,12 @@ export default class GuiWindow {
     );
   }
 
+  registerClickable(clickable) {
+    this.clickables.push(clickable);
+  }
+
   handleMousePressed() {
-    this.titleBar.handleMousePressed();
+    // loop over all clickables and call their handleMousePressed method
+    this.clickables.forEach((clickable) => clickable.handleMousePressed());
   }
 }
