@@ -1,3 +1,7 @@
+import GuiCircle from "./gui-circle.js";
+import GuiRectangle from "./gui-rectangle.js";
+import GuiButton from "./gui-button.js";
+
 export default class GuiWindowTitleBar {
   constructor(p, x, y, width, height, color, title, textSize = 20) {
     this.p = p;
@@ -12,6 +16,39 @@ export default class GuiWindowTitleBar {
     this.isTitleEditing = false;
     this.input = null;
     this.titlePadding = 34;
+
+    this.editTitleButton = new GuiButton(
+      p,
+      new GuiRectangle(
+        p,
+        x + this.titlePadding,
+        y,
+        width - this.titlePadding,
+        this.height
+      ),
+      "",
+      0,
+      () => this.createInputField(),
+      () => this.removeInputField()
+    );
+    this.closeButton = new GuiButton(
+      p,
+      new GuiCircle(
+        p,
+        x + this.titlePadding / 2,
+        y + this.height / 2,
+        8,
+        p.color(235, 150, 150),
+        p.color(235, 150, 150),
+        p.color(100),
+        p.color(245, 70, 70)
+      ),
+      "×",
+      16,
+      () => {
+        console.log("Close button clicked");
+      }
+    );
   }
 
   display() {
@@ -20,21 +57,16 @@ export default class GuiWindowTitleBar {
     this.p.textAlign(this.p.LEFT, this.p.CENTER);
     this.p.fill(this.color);
     this.p.rect(this.x, this.y, this.width, this.height);
-    if (this.isTitleHovered() && !this.isTitleEditing) {
-      this.p.fill(75);
-    } else {
-      this.p.fill(0);
-    }
+    this.p.fill(0);
     this.p.text(
       this.title,
       this.x + this.titlePadding,
       this.y + this.height / 2
     );
-
-    this.p.fill(235, 150, 150);
-    this.p.circle(this.x + this.titlePadding / 2, this.y + this.height / 2, 10);
-
     this.p.pop();
+
+    this.editTitleButton.display();
+    this.closeButton.display();
 
     if (this.isTitleEditing && this.input) {
       this.title = this.input.value();
@@ -42,20 +74,8 @@ export default class GuiWindowTitleBar {
   }
 
   handleMousePressed() {
-    if (this.isTitleHovered()) {
-      this.createInputField();
-    } else {
-      this.removeInputField();
-    }
-  }
-
-  isTitleHovered() {
-    return (
-      this.p.mouseX > this.x + this.titlePadding &&
-      this.p.mouseX < this.x + this.width &&
-      this.p.mouseY > this.y &&
-      this.p.mouseY < this.y + this.height
-    );
+    this.editTitleButton.handleMousePressed();
+    this.closeButton.handleMousePressed();
   }
 
   createInputField() {
