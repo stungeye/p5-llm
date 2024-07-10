@@ -3,7 +3,17 @@ import GuiRectangle from "./gui-rectangle.js";
 import GuiButton from "./gui-button.js";
 
 export default class GuiWindowTitleBar {
-  constructor(p, x, y, width, height, color, title, textSize = 20) {
+  constructor(
+    p,
+    x,
+    y,
+    width,
+    height,
+    color,
+    title,
+    textSize = 20,
+    closeButtonAction = null
+  ) {
     this.p = p;
     this.x = x;
     this.y = y;
@@ -12,6 +22,7 @@ export default class GuiWindowTitleBar {
     this.color = color;
     this.title = title;
     this.textSize = textSize;
+    this.closeButtonAction = closeButtonAction;
 
     this.isTitleEditing = false;
     this.input = null;
@@ -45,9 +56,7 @@ export default class GuiWindowTitleBar {
       ),
       "×",
       16,
-      () => {
-        console.log("Close button clicked");
-      }
+      () => this.closeButtonAction && this.closeButtonAction()
     );
   }
 

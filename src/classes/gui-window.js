@@ -37,7 +37,12 @@ export default class GuiWindow {
       35,
       p.color(200),
       title,
-      15
+      15,
+      () => {
+        if (confirm("Are you sure you want to close this window?")) {
+          this.manager.removeWindow(this);
+        }
+      }
     );
   }
 

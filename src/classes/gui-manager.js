@@ -8,6 +8,10 @@ export default class GuiManager {
     this.windows.push(window);
   }
 
+  removeWindow(window) {
+    this.windows = this.windows.filter((w) => w !== window);
+  }
+
   displayWindows() {
     this.windows.forEach((window) => window.display());
   }
