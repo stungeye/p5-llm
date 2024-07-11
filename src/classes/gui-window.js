@@ -41,18 +41,8 @@ export default class GuiWindow {
       p.color(200),
       title,
       15,
-      () => {
-        if (
-          confirm(
-            `Are you sure you want to destroy the "${this.titleBar.getTitle()}" window?`
-          )
-        ) {
-          this.manager.removeWindow(this);
-        }
-      },
-      () => {
-        this.titleBar.move(p.mouseX, p.mouseY, this);
-      }
+      () => this.closeWindow(),
+      () => this.titleBar.move(p.mouseX, p.mouseY, this)
     );
     this.resizeButton = new GuiButton(
       p,
@@ -94,6 +84,16 @@ export default class GuiWindow {
     this.y += deltaY;
     this.resizeButton.moveDelta(deltaX, deltaY);
     this.manager.moveWindowToTop(this);
+  }
+
+  closeWindow() {
+    if (
+      confirm(
+        `Are you sure you want to destroy the "${this.titleBar.getTitle()}" window?`
+      )
+    ) {
+      this.manager.removeWindow(this);
+    }
   }
 
   resizeWindow() {
