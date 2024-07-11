@@ -58,14 +58,14 @@ export default class GuiWindow {
       p,
       new GuiRectangle(
         p,
-        x + width - 10,
-        y + height - 10,
-        10,
-        10,
-        Config.colors.moveButton
+        x + width - 17,
+        y + height - 17,
+        17,
+        17,
+        Config.colors.moveButton,
+        "⤭",
+        16
       ),
-      "",
-      0,
       null,
       null,
       () => this.resizeWindow()

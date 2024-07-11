@@ -43,8 +43,6 @@ export default class GuiWindowTitleBar {
         this.height,
         Config.colors.invisibleButton
       ),
-      "",
-      0,
       () => this.createInputField(),
       () => this.removeInputField()
     );
@@ -55,10 +53,10 @@ export default class GuiWindowTitleBar {
         x + this.titlePadding / 3,
         y + this.height / 2,
         8,
-        Config.colors.closeButton
+        Config.colors.closeButton,
+        "×",
+        16
       ),
-      "×",
-      16,
       () => this.closeButtonAction && this.closeButtonAction()
     );
     this.moveButton = new GuiButton(
@@ -68,10 +66,10 @@ export default class GuiWindowTitleBar {
         x + this.moveButtonOffsetX,
         y + this.moveButtonOffsetY,
         8,
-        Config.colors.moveButton
+        Config.colors.moveButton,
+        "⇄",
+        14
       ),
-      "⇄",
-      14,
       null,
       null,
       () => this.moveButtonAction && this.moveButtonAction()
