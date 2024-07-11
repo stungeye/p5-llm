@@ -16,6 +16,9 @@
     in sequence. All of this functionality will be handled by the GuiWindowController.
 */
 import GuiWindowTitleBar from "./gui-window-titlebar";
+import GuiButton from "./gui-button";
+import GuiRectangle from "./gui-rectangle";
+import Config from "./config";
 
 export default class GuiWindow {
   constructor(p, x, y, width, height, title, controller, manager) {
@@ -42,27 +45,82 @@ export default class GuiWindow {
         if (confirm("Are you sure you want to destroy this window?")) {
           this.manager.removeWindow(this);
         }
+      },
+      () => {
+        this.titleBar.move(p.mouseX, p.mouseY, this);
       }
+    );
+    this.resizeButton = new GuiButton(
+      p,
+      new GuiRectangle(
+        p,
+        x + width - 10,
+        y + height - 10,
+        10,
+        10,
+        Config.colors.moveButton
+      ),
+      "",
+      0,
+      null,
+      null,
+      () => this.resizeWindow()
     );
   }
 
   display() {
-    // Draw the window
+    this.p.push();
     this.p.fill(240);
     this.p.rect(this.x, this.y, this.width, this.height);
     this.titleBar.display();
-
-    // Delegate the functionality to the controller
+    this.resizeButton.display();
+    /*
     this.controller.display(
       this.p,
       this.x,
       this.y + 35,
       this.width,
       this.height - 35
-    );
+    );*/
+    this.p.pop();
+  }
+
+  moveDelta(deltaX, deltaY) {
+    this.x += deltaX;
+    this.y += deltaY;
+    this.resizeButton.moveDelta(deltaX, deltaY);
+  }
+
+  resizeWindow() {
+    let deltaX = this.p.movedX;
+    let deltaY = this.p.movedY;
+    let newWidth = this.width + deltaX;
+    let newHeight = this.height + deltaY;
+
+    if (newWidth > 150) {
+      this.width = newWidth;
+      this.titleBar.width = this.width;
+      this.resizeButton.moveDelta(deltaX, 0);
+    }
+
+    if (newHeight > 100) {
+      this.height = newHeight;
+      this.resizeButton.moveDelta(0, deltaY);
+    }
   }
 
   handleMousePressed() {
     this.titleBar.handleMousePressed();
+    this.resizeButton.handleMousePressed();
+  }
+
+  handleMouseDragged() {
+    this.titleBar.handleMouseDragged();
+    this.resizeButton.handleMouseDragged();
+  }
+
+  handleMouseReleased() {
+    this.titleBar.handleMouseReleased();
+    this.resizeButton.handleMouseReleased();
   }
 }

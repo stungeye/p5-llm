@@ -5,7 +5,8 @@ export default class GuiButton {
     title = "",
     textSize = 14,
     onClick = null,
-    onMissClick = null
+    onMissClick = null,
+    onDragged = null
   ) {
     this.p = p;
     this.shape = shape; // Shape object must have isHovered() and display() methods.
@@ -13,10 +14,13 @@ export default class GuiButton {
     this.textSize = textSize;
     this.onClick = onClick;
     this.onMissClick = onMissClick;
+    this.onDragged = onDragged;
+
+    this.isPressed = false;
   }
 
   display() {
-    this.shape.display();
+    this.shape.display(this.isPressed);
 
     // Draw the title text
     this.p.push();
@@ -28,12 +32,28 @@ export default class GuiButton {
     this.p.pop();
   }
 
+  moveDelta(deltaX, deltaY) {
+    this.shape.x += deltaX;
+    this.shape.y += deltaY;
+  }
+
   handleMousePressed() {
-    if (this.shape.isHovered() && this.onClick) {
-      this.onClick();
+    if (this.shape.isHovered()) {
+      this.isPressed = true;
+      this.onClick && this.onClick();
     } else if (!this.shape.isHovered() && this.onMissClick) {
       this.onMissClick();
     }
+  }
+
+  handleMouseDragged() {
+    if (this.onDragged && this.isPressed) {
+      this.onDragged();
+    }
+  }
+
+  handleMouseReleased() {
+    this.isPressed = false;
   }
 
   setOnClick(callback) {

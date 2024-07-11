@@ -8,13 +8,9 @@ export default class Rectangle {
     this.colors = colors;
   }
 
-  display(isHovered) {
+  display(isPressed) {
     this.p.push();
-    this.colors.setColors(
-      this.p,
-      isHovered,
-      this.p.mouseIsPressed && this.isHovered()
-    );
+    this.colors.setColors(this.p, this.isHovered(), isPressed);
 
     this.p.rect(this.x, this.y, this.width, this.height);
     this.p.pop();

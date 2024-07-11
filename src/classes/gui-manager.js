@@ -19,4 +19,12 @@ export default class GuiManager {
   handleMousePressed() {
     this.windows.forEach((window) => window.handleMousePressed());
   }
+
+  handleMouseDragged() {
+    this.windows.forEach((window) => window.handleMouseDragged());
+  }
+
+  handleMouseReleased() {
+    this.windows.forEach((window) => window.handleMouseReleased());
+  }
 }

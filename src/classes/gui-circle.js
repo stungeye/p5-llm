@@ -7,13 +7,9 @@ export default class Circle {
     this.colors = colors;
   }
 
-  display() {
+  display(isPressed) {
     this.p.push();
-    this.colors.setColors(
-      this.p,
-      this.isHovered(),
-      this.p.mouseIsPressed && this.isHovered()
-    );
+    this.colors.setColors(this.p, this.isHovered(), isPressed);
 
     this.p.ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
     this.p.pop();

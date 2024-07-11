@@ -59,6 +59,14 @@ const sketch = (p) => {
     guiManager.handleMousePressed();
   };
 
+  p.mouseDragged = () => {
+    guiManager.handleMouseDragged();
+  };
+
+  p.mouseReleased = () => {
+    guiManager.handleMouseReleased();
+  };
+
   p.windowResized = () => {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
   };
