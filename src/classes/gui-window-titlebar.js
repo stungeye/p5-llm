@@ -1,6 +1,7 @@
 import GuiCircle from "./gui-circle.js";
 import GuiRectangle from "./gui-rectangle.js";
 import GuiButton from "./gui-button.js";
+import Config from "./config.js";
 
 export default class GuiWindowTitleBar {
   constructor(
@@ -35,7 +36,8 @@ export default class GuiWindowTitleBar {
         x + this.titlePadding,
         y,
         width - this.titlePadding,
-        this.height
+        this.height,
+        Config.colors.invisibleButton
       ),
       "",
       0,
@@ -49,10 +51,7 @@ export default class GuiWindowTitleBar {
         x + this.titlePadding / 2,
         y + this.height / 2,
         8,
-        p.color(235, 150, 150),
-        p.color(235, 150, 150),
-        p.color(100),
-        p.color(245, 70, 70)
+        Config.colors.closeButton
       ),
       "×",
       16,

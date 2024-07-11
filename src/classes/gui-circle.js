@@ -1,51 +1,19 @@
 export default class Circle {
-  constructor(
-    p,
-    x,
-    y,
-    radius,
-    defaultStroke = null,
-    defaultFill = null,
-    hoverStroke = null,
-    hoverFill = null
-  ) {
+  constructor(p, x, y, radius, colors) {
     this.p = p;
     this.x = x;
     this.y = y;
     this.radius = radius;
-    this.defaultStroke = defaultStroke;
-    this.defaultFill = defaultFill;
-    this.hoverStroke = hoverStroke;
-    this.hoverFill = hoverFill;
+    this.colors = colors;
   }
 
   display() {
     this.p.push();
-    if (this.isHovered()) {
-      if (this.hoverStroke) {
-        this.p.stroke(this.hoverStroke);
-      } else {
-        this.p.noStroke();
-      }
-
-      if (this.hoverFill) {
-        this.p.fill(this.hoverFill);
-      } else {
-        this.p.noFill();
-      }
-    } else {
-      if (this.defaultStroke) {
-        this.p.stroke(this.defaultStroke);
-      } else {
-        this.p.noStroke();
-      }
-
-      if (this.defaultFill) {
-        this.p.fill(this.defaultFill);
-      } else {
-        this.p.noFill();
-      }
-    }
+    this.colors.setColors(
+      this.p,
+      this.isHovered(),
+      this.p.mouseIsPressed && this.isHovered()
+    );
 
     this.p.ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
     this.p.pop();
