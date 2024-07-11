@@ -93,6 +93,7 @@ export default class GuiWindow {
     this.x += deltaX;
     this.y += deltaY;
     this.resizeButton.moveDelta(deltaX, deltaY);
+    this.manager.moveWindowToTop(this);
   }
 
   resizeWindow() {
@@ -111,6 +112,8 @@ export default class GuiWindow {
       this.height = newHeight;
       this.resizeButton.moveDelta(0, deltaY);
     }
+
+    this.manager.moveWindowToTop(this);
   }
 
   handleMousePressed() {

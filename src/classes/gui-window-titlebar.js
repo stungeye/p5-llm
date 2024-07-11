@@ -105,7 +105,7 @@ export default class GuiWindowTitleBar {
       this.input = this.p.createInput(this.title);
       this.input.position(this.x + this.titlePadding, this.y + 5);
       this.input.style("font-size", this.textSize + "px");
-      this.input.size(this.width - 1.2 * this.titlePadding, this.height - 14);
+      this.input.size(this.width - this.titlePadding - 10, this.height - 14);
 
       this.input.elt.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
