@@ -42,7 +42,11 @@ export default class GuiWindow {
       title,
       15,
       () => {
-        if (confirm("Are you sure you want to destroy this window?")) {
+        if (
+          confirm(
+            `Are you sure you want to destroy the "${this.titleBar.getTitle()}" window?`
+          )
+        ) {
           this.manager.removeWindow(this);
         }
       },
