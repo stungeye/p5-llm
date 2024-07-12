@@ -2,11 +2,13 @@ import p5 from "p5";
 import GuiManager from "./classes/gui-manager";
 import GuiController from "./classes/gui-controller";
 import GuiWindow from "./classes/gui-window";
+import testFunction from "./test";
 
 const sketch = (p) => {
   let guiManager;
 
   p.setup = () => {
+    testFunction();
     p.createCanvas(p.windowWidth, p.windowHeight);
 
     guiManager = new GuiManager(p);
