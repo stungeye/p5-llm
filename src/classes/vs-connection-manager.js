@@ -6,6 +6,13 @@ export default class VsConnectionManager {
     this.nodes = new Set();
   }
 
+  connectionIsValid(outputPin, inputPin) {
+    return (
+      outputPin.getType() === inputPin.getType() &&
+      outputPin.getNode() !== inputPin.getNode()
+    );
+  }
+
   addConnection(outputPin, inputPin) {
     if (outputPin.getType() !== inputPin.getType()) {
       console.log("Connection failed: Type mismatch");
@@ -20,6 +27,7 @@ export default class VsConnectionManager {
     );
 
     // Add new connection
+    console.log("Adding connection");
     const connection = new VsConnection(outputPin, inputPin);
     this.connections.push(connection);
 

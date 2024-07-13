@@ -28,16 +28,18 @@ export default class GuiWindow {
     this.width = width;
     this.height = height;
     this.controller = controller;
+    this.controller.setParentWindow(this);
     this.manager = manager;
 
     this.isTitleEditing = false;
     this.input = null;
+    this.titleTopPadding = 35;
     this.titleBar = new GuiWindowTitleBar(
       p,
       x,
       y,
       width,
-      35,
+      this.titleTopPadding,
       p.color(200),
       title,
       15,
@@ -67,16 +69,19 @@ export default class GuiWindow {
     this.p.fill(240);
     this.p.rect(this.x, this.y, this.width, this.height);
     this.titleBar.display();
+
+    this.controller.display();
     this.resizeButton.display();
-    /*
-    this.controller.display(
-      this.p,
-      this.x,
-      this.y + 35,
-      this.width,
-      this.height - 35
-    );*/
     this.p.pop();
+  }
+
+  getControllerWindowDimensions() {
+    return [
+      this.x,
+      this.y + this.titleTopPadding,
+      this.width,
+      this.height - this.titleTopPadding,
+    ];
   }
 
   moveDelta(deltaX, deltaY) {
@@ -92,6 +97,7 @@ export default class GuiWindow {
         `Are you sure you want to destroy the "${this.titleBar.getTitle()}" window?`
       )
     ) {
+      this.controller.destroy();
       this.manager.removeWindow(this);
     }
   }

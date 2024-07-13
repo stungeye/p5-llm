@@ -1,19 +1,24 @@
 import p5 from "p5";
 import GuiManager from "./classes/gui-manager";
 import GuiController from "./classes/gui-controller";
+import GuiControllerSelector from "./classes/gui-controller-selector";
 import GuiWindow from "./classes/gui-window";
-import testFunction from "./test";
+import VsConnectionManager from "./classes/vs-connection-manager";
+//import testFunction from "./test";
 
 const sketch = (p) => {
   let guiManager;
+  let connectionManager;
 
   p.setup = () => {
-    testFunction();
+    //testFunction();
     p.createCanvas(p.windowWidth, p.windowHeight);
 
     guiManager = new GuiManager(p);
+    connectionManager = new VsConnectionManager();
 
     // Add some windows with different controllers
+
     guiManager.addWindow(
       new GuiWindow(
         p,
@@ -21,8 +26,8 @@ const sketch = (p) => {
         50,
         200,
         150,
-        "Window 1",
-        new GuiController(),
+        "Create Windows",
+        new GuiControllerSelector(p, connectionManager),
         guiManager
       )
     );
@@ -34,7 +39,7 @@ const sketch = (p) => {
         200,
         150,
         "Window 2",
-        new GuiController(),
+        new GuiController(p),
         guiManager
       )
     );
@@ -46,7 +51,7 @@ const sketch = (p) => {
         200,
         150,
         "Window 3",
-        new GuiController(),
+        new GuiController(p),
         guiManager
       )
     );

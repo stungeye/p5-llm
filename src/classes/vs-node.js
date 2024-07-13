@@ -23,12 +23,20 @@ export default class VsNode {
     pin.setNode(this);
   }
 
+  getInputs() {
+    return this.inputs;
+  }
+
   setOutput(pin) {
     if (!(pin instanceof VsOutputPin)) {
       throw new Error(this.buildErrorString("Invalid output pin."));
     }
     pin.setNode(this);
     this.output = pin;
+  }
+
+  getOutput() {
+    return this.output;
   }
 
   setOperation(operation) {
@@ -48,12 +56,14 @@ export default class VsNode {
       const result = this.operation(...inputValues);
       console.log(`Result of operation: ${result}`);
       if (this.output) {
-        this.output.setValue(result);
+        console.log("setting output value");
+        return this.output.setValue(result);
       }
     } else if (this.type === VsNodeTypes.Function) {
       throw new Error(this.buildErrorString("Operation not set."));
     } else {
       console.log("Not a function node");
+      return false;
     }
   }
 

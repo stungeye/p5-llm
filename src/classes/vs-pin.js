@@ -1,4 +1,4 @@
-import VsPinTypes from "./vs-pin-types.js";
+import { VsPinTypes, parsePinValue } from "./vs-pin-types.js";
 import { v4 as uuidv4 } from "uuid";
 
 export class Pin {
@@ -21,7 +21,14 @@ export class Pin {
   }
 
   setValue(value) {
-    this.value = value;
+    /*
+    console.log(`Setting value ${value} for pin ${this.id}`);
+    console.log(`Pin type is ${this.type}`);
+    console.log(`Value type is ${typeof value}`);
+    */
+    let parsedValue = parsePinValue(this.type, value);
+    this.value = parsedValue;
+    return parsedValue !== null;
   }
 
   getValue() {

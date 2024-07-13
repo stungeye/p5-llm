@@ -2,7 +2,7 @@ import VsConnectionManager from "./classes/vs-connection-manager";
 import VsNode from "./classes/vs-node";
 import { VsInputPin, VsOutputPin } from "./classes/vs-pin";
 import VsNodeTypes from "./classes/vs-node-types";
-import VsPinTypes from "./classes/vs-pin-types";
+import { VsPinTypes } from "./classes/vs-pin-types";
 
 export default function textFunction() {
   const connectionManager = new VsConnectionManager();
