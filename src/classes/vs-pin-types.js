@@ -45,11 +45,9 @@ export function parsePinValue(type, value) {
       }
       break;
     case VsPinTypes.Function:
-      console.log("Checking function type");
       if (typeof value === "function") {
         return value;
       } else if (typeof value === "string") {
-        console.log("Checking function string");
         try {
           return new Function(value);
         } catch (e) {
