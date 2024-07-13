@@ -3,6 +3,7 @@ export const VsPinTypes = Object.freeze({
   String: "string",
   Boolean: "boolean",
   Object: "object",
+  Function: "function",
 });
 
 export function parsePinValue(type, value) {
@@ -38,6 +39,19 @@ export function parsePinValue(type, value) {
       } else if (typeof value === "string") {
         try {
           return JSON.parse(value);
+        } catch (e) {
+          return null;
+        }
+      }
+      break;
+    case VsPinTypes.Function:
+      console.log("Checking function type");
+      if (typeof value === "function") {
+        return value;
+      } else if (typeof value === "string") {
+        console.log("Checking function string");
+        try {
+          return new Function(value);
         } catch (e) {
           return null;
         }
