@@ -21,7 +21,7 @@ import GuiRectangle from "./gui-rectangle";
 import Config from "./config";
 
 export default class GuiWindow {
-  constructor(p, x, y, width, height, title, controller, manager) {
+  constructor(p, x, y, width, height, title, controller, guiManager) {
     this.p = p;
     this.x = x;
     this.y = y;
@@ -29,7 +29,7 @@ export default class GuiWindow {
     this.height = height;
     this.controller = controller;
     this.controller.setParentWindow(this);
-    this.manager = manager;
+    this.guiManager = guiManager;
 
     this.isTitleEditing = false;
     this.input = null;
@@ -88,7 +88,7 @@ export default class GuiWindow {
     this.x += deltaX;
     this.y += deltaY;
     this.resizeButton.moveDelta(deltaX, deltaY);
-    this.manager.moveWindowToTop(this);
+    this.guiManager.moveWindowToTop(this);
   }
 
   closeWindow() {
@@ -98,7 +98,7 @@ export default class GuiWindow {
       )
     ) {
       this.controller.destroy();
-      this.manager.removeWindow(this);
+      this.guiManager.removeWindow(this);
     }
   }
 
@@ -119,12 +119,13 @@ export default class GuiWindow {
       this.resizeButton.moveDelta(0, deltaY);
     }
 
-    this.manager.moveWindowToTop(this);
+    this.guiManager.moveWindowToTop(this);
   }
 
   handleMousePressed() {
     this.titleBar.handleMousePressed();
     this.resizeButton.handleMousePressed();
+    this.controller.handleMousePressed();
   }
 
   handleMouseDragged() {
@@ -135,5 +136,6 @@ export default class GuiWindow {
   handleMouseReleased() {
     this.titleBar.handleMouseReleased();
     this.resizeButton.handleMouseReleased();
+    this.controller.handleMouseReleased();
   }
 }

@@ -2,7 +2,6 @@ import GuiController from "./gui-controller";
 import { VsPinTypes } from "./vs-pin-types";
 import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
-import { VsOutputPin } from "./vs-pin";
 
 export default class GuiControllerConstant extends GuiController {
   constructor(p, selectionManager) {
@@ -14,8 +13,7 @@ export default class GuiControllerConstant extends GuiController {
     });
 
     this.select.changed(() => {
-      console.log("Select changed", this.select.selected());
-      this.addOutputPin();
+      this.setOutputPin(VsPinTypes[this.select.value()]);
     });
 
     this.input = this.p.createElement("textarea");
@@ -25,26 +23,20 @@ export default class GuiControllerConstant extends GuiController {
 
     // create VsNode of type Function with and output node of the selected type
     this.node = new VsNode(VsNodeTypes.Function);
-    this.addOutputPin();
+    this.setOutputPin(VsPinTypes[this.select.value()]);
   }
 
   inputResized() {
     // Set the input's width and height properties to the input elements width and height
     this.input.width = this.input.elt.offsetWidth;
   }
-
-  addOutputPin() {
-    this.output = new VsOutputPin(VsPinTypes[this.select.value()]);
-    this.node.setOutput(this.output);
-    this.node.setOperation(() => this.input.value());
-    this.valueIsValid = this.node.execute();
-  }
-
   changeValue() {
     this.valueIsValid = this.node.execute();
   }
 
   display() {
+    super.display();
+
     const [x, y, width, height] =
       this.parentWindow.getControllerWindowDimensions();
     this.p.push();
@@ -62,12 +54,6 @@ export default class GuiControllerConstant extends GuiController {
     // Resize and reposition input
     this.input.position(x + 20, y + 60);
     this.input.size(width - 50, height - 100);
-
-    // display output value
-    this.p.push();
-    this.p.fill("black");
-    this.p.textSize(16);
-    this.p.text(`Output: ${this.output.getValue()}`, x + 20, y + 200);
   }
 
   destroy() {
