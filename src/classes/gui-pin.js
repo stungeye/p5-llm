@@ -45,18 +45,20 @@ export default class GuiPin {
     if (this.isHovered(x, y)) {
       this.p.textSize(16);
       let outputValue = "" + this.pin.getValue();
+
       if (this.pin.getType() === "object") {
         outputValue = JSON.stringify(this.pin.getValue(), null, 2);
       }
+
       const outputWidth = this.p.textWidth(outputValue);
-      //output height based on number of newlines in the output value and the ascent/descent of the font
       const outputHeight =
         (this.p.textAscent() + this.p.textDescent()) *
         outputValue.split("\n").length;
-      this.p.rect(x + 20, y, outputWidth + 10, outputHeight + 10);
+
+      this.p.rect(x + 25, y, outputWidth + 10, outputHeight + 5);
       this.p.noStroke();
       this.p.fill("black");
-      this.p.text(outputValue, x + 25, y + 16);
+      this.p.text(outputValue, x + 30, y + 16);
     }
   }
 
