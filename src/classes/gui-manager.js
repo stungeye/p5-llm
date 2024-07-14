@@ -12,6 +12,10 @@ export default class GuiManager {
     this.windows = this.windows.filter((w) => w !== window);
   }
 
+  indexOfWindow(window) {
+    return this.windows.indexOf(window);
+  }
+
   moveWindowToTop(window) {
     if (this.windows[this.windows.length - 1] === window) return;
     console.log("moving to top");

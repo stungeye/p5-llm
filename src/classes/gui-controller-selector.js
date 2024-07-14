@@ -48,9 +48,15 @@ export default class GuiControllerSelector extends GuiController {
     this.p.rect(x, y, width, height);
     this.p.pop();
 
+    const zindex = this.parentWindow.guiManager.indexOfWindow(
+      this.parentWindow
+    );
+
     this.select.position(x + 20, y + 20);
+    this.select.style("z-index", zindex + 1);
     // display new window button
     this.newWindowButton.position(x + 20, y + 60);
+    this.newWindowButton.style("z-index", zindex + 1);
   }
 
   destroy() {
