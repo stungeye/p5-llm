@@ -13,9 +13,6 @@ export default class GuiController {
     this.inputGuiPins = [];
   }
 
-  // Method to be overridden by child classes for specific functionalities
-  execute() {}
-
   setParentWindow(window) {
     this.parentWindow = window;
   }
@@ -53,8 +50,6 @@ export default class GuiController {
     this.p.pop();
   }
 
-  destroy() {}
-
   handleMousePressed() {
     if (this.outputGuiPin) {
       const [x, y, width, height] =
@@ -68,4 +63,8 @@ export default class GuiController {
       this.outputGuiPin.handleMouseReleased();
     }
   }
+
+  // Methods to be overridden by child classes for specific functionalities
+  execute() {}
+  destroy() {}
 }

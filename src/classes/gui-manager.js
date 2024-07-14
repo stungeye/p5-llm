@@ -18,7 +18,6 @@ export default class GuiManager {
 
   moveWindowToTop(window) {
     if (this.windows[this.windows.length - 1] === window) return;
-    console.log("moving to top");
     this.removeWindow(window);
     this.addWindow(window);
   }

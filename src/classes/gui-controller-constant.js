@@ -48,12 +48,6 @@ export default class GuiControllerConstant extends GuiController {
     this.p.rect(x, y, width, height);
     this.p.pop();
 
-    const zindex = this.parentWindow.guiManager.indexOfWindow(
-      this.parentWindow
-    );
-    this.select.style("z-index", zindex + 1);
-    this.input.style("z-index", zindex + 1);
-
     // Reposition select
     this.select.position(x + 20, y + 20);
 
