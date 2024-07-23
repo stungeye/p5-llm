@@ -3,7 +3,7 @@ import { VsPinTypes } from "./vs-pin-types";
 import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
 
-export default class GuiControllerConstant extends GuiController {
+export default class GuiControllerUserFunction extends GuiController {
   constructor(p, connectionManager) {
     super(p, connectionManager);
 
@@ -19,7 +19,10 @@ export default class GuiControllerConstant extends GuiController {
     this.input = this.p.createElement("textarea");
     // make the textarea element non-resizable
     this.input.style("resize", "none");
-    this.input.input(() => this.changeValue());
+    this.input.input(() => {
+      this.configureNode();
+      this.changeValue();
+    });
 
     // create VsNode of type Function and configure it.
     this.node = new VsNode(VsNodeTypes.Function);
@@ -28,13 +31,15 @@ export default class GuiControllerConstant extends GuiController {
 
   configureNode() {
     // Sets the output pin of the node to the selected pin type
+    // This should actually be set by the user in the GUI.
     this.setOutputPin(VsPinTypes[this.select.value()]);
 
-    // Set the operation of the node to always return the input value.
+    // Currently sets the operation to a placeholder function that always returns true.
+    // Should also set input pins.
     if (this.node) {
       this.node.setOutput(this.outputPin);
-      this.node.setOperation(() => this.input.value());
-      this.valueIsValid = this.node.execute();
+      this.node.setOperation(new Function(this.input.value()));
+      this.changeValue();
     } else {
       console.log("Node is null when trying to set output pin.");
     }
@@ -46,7 +51,12 @@ export default class GuiControllerConstant extends GuiController {
   }
 
   changeValue() {
-    this.valueIsValid = this.node.execute();
+    try {
+      this.valueIsValid = this.node.execute();
+    } catch (e) {
+      console.log("Error executing function:", this.input.value());
+      this.valueIsValid = false;
+    }
   }
 
   display() {

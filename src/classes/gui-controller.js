@@ -17,16 +17,9 @@ export default class GuiController {
     this.parentWindow = window;
   }
 
-  setOutputPin(pin) {
-    this.outputPin = new VsOutputPin(pin);
+  setOutputPin(pinType) {
+    this.outputPin = new VsOutputPin(pinType);
     this.outputGuiPin = new GuiPin(this.p, this.outputPin);
-    if (this.node) {
-      this.node.setOutput(this.outputPin);
-      this.node.setOperation(() => this.input.value());
-      this.valueIsValid = this.node.execute();
-    } else {
-      console.log("Node is null when trying to set output pin.");
-    }
   }
 
   addInputPin(pin) {
