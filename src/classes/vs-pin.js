@@ -45,8 +45,9 @@ export class Pin {
 }
 
 export class VsInputPin extends Pin {
-  constructor(type) {
+  constructor(type, name = "") {
     super(type);
+    this.name = name;
   }
 }
 

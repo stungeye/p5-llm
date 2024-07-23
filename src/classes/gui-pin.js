@@ -50,6 +50,10 @@ export default class GuiPin {
         outputValue = JSON.stringify(this.pin.getValue(), null, 2);
       }
 
+      if (this.pin instanceof VsInputPin) {
+        outputValue = this.pin.name + ": " + outputValue;
+      }
+
       const outputWidth = this.p.textWidth(outputValue);
       const outputHeight =
         (this.p.textAscent() + this.p.textDescent()) *

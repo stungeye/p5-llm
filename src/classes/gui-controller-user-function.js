@@ -71,10 +71,14 @@ export default class GuiControllerUserFunction extends GuiController {
       this.p.fill("red");
     }
     this.p.rect(x, y, width, height);
-    this.p.pop();
 
+    this.p.noStroke();
+    this.p.fill(0);
+    this.p.textSize(15);
+    this.p.text("Output:", x + 20, y + 40);
+    this.p.pop();
     // Reposition select
-    this.select.position(x + 20, y + 20);
+    this.select.position(x + 75, y + 20);
 
     // Resize and reposition input
     this.input.position(x + 20, y + 60);
