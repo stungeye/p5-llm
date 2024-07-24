@@ -25,7 +25,8 @@ export default class GuiControllerSelector extends GuiController {
     const [x, y, width, height] =
       this.parentWindow.getControllerWindowDimensions();
     // A new window directly below the current window
-    const newController = GuiControllerTypes[this.select.value()](
+    const newControllerData = GuiControllerTypes[this.select.value()];
+    const newController = newControllerData.factory(
       this.p,
       this.connectionManager
     );
@@ -35,8 +36,8 @@ export default class GuiControllerSelector extends GuiController {
         this.p,
         x,
         y + height + 10,
-        200,
-        150,
+        newControllerData.width,
+        newControllerData.height,
         this.select.value(),
         newController,
         this.parentWindow.guiManager

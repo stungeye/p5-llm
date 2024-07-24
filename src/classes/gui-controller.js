@@ -1,4 +1,4 @@
-import { VsOutputPin } from "./vs-pin";
+import { VsOutputPin, VsInputPin } from "./vs-pin";
 import GuiPin from "./gui-pin";
 
 export default class GuiController {
@@ -22,9 +22,19 @@ export default class GuiController {
     this.outputGuiPin = new GuiPin(this.p, this.outputPin);
   }
 
-  addInputPin(pin) {
-    this.inputPins.push(pin);
-    this.inputGuiPins.push(new GuiPin(this.p, pin));
+  addInputPin(pinType, name) {
+    if (name.length === 0) return false;
+    if (this.inputPins.find((inputPin) => inputPin.name === name)) return false;
+
+    const newPin = new VsInputPin(pinType, name);
+    this.inputPins.push(newPin);
+    this.inputGuiPins.push(new GuiPin(this.p, newPin));
+
+    return true;
+  }
+
+  getInputPinNames() {
+    return this.inputPins.map((inputPin) => inputPin.name);
   }
 
   removeInputPin(pin) {
@@ -39,6 +49,12 @@ export default class GuiController {
     this.p.push();
     if (this.outputGuiPin) {
       this.outputGuiPin.display(x + width, y + 10);
+    }
+
+    if (this.inputGuiPins.length > 0) {
+      this.inputGuiPins.forEach((inputGuiPin, index) => {
+        inputGuiPin.display(x - 8, y + 25 * (index + 1));
+      });
     }
     this.p.pop();
   }

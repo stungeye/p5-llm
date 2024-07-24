@@ -56,9 +56,9 @@ export default class GuiControllerConstant extends GuiController {
       this.parentWindow.getControllerWindowDimensions();
     this.p.push();
     if (this.valueIsValid) {
-      this.p.fill("green");
+      this.p.fill("#E0FFE0");
     } else {
-      this.p.fill("red");
+      this.p.fill("#FFE0E0");
     }
     this.p.rect(x, y, width, height);
     this.p.pop();

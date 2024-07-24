@@ -104,4 +104,34 @@ export default class VsConnectionManager {
         });
     });
   }
+
+  // Draws using p5.js (the p variable, example: p.push()) a visual representation of the connections
+  // and the nodes, with lables. Also, a count of nodes and connections.
+  display(p, x, y) {
+    p.push();
+    p.translate(x, y);
+    p.textSize(16);
+    p.fill(0);
+    p.text(`Nodes: ${this.nodes.size}`, 0, 0);
+    p.text(`Connections: ${this.connections.length}`, 0, 20);
+    p.text("Connections", 0, 40);
+    this.connections.forEach((conn, index) => {
+      p.text(
+        `- ${index + 1}: ${conn.outputPin.getNode().id} -> ${
+          conn.inputPin.getNode().id
+        }`,
+        0,
+        60 + index * 20
+      );
+    });
+    p.text("Nodes", 0, 60 + this.connections.length * 20);
+    this.nodes.forEach((node, index) => {
+      p.text(
+        `- ${index + 1}: ${node.id}`,
+        0,
+        80 + this.connections.length * 20 + index * 20
+      );
+    });
+    p.pop();
+  }
 }

@@ -45,6 +45,7 @@ export default class GuiPin {
     if (this.isHovered(x, y)) {
       this.p.textSize(16);
       let outputValue = "" + this.pin.getValue();
+      let xOffset = 25;
 
       if (this.pin.getType() === "object") {
         outputValue = JSON.stringify(this.pin.getValue(), null, 2);
@@ -52,6 +53,7 @@ export default class GuiPin {
 
       if (this.pin instanceof VsInputPin) {
         outputValue = this.pin.name + ": " + outputValue;
+        xOffset = -this.p.textWidth(outputValue) - 25;
       }
 
       const outputWidth = this.p.textWidth(outputValue);
@@ -59,11 +61,12 @@ export default class GuiPin {
         (this.p.textAscent() + this.p.textDescent()) *
         outputValue.split("\n").length;
 
-      this.p.rect(x + 25, y, outputWidth + 10, outputHeight + 5);
+      this.p.rect(x + xOffset, y, outputWidth + 10, outputHeight + 5);
       this.p.noStroke();
       this.p.fill("black");
-      this.p.text(outputValue, x + 30, y + 16);
+      this.p.text(outputValue, x + xOffset + 5, y + 16);
     }
+    this.p.pop();
   }
 
   handleMousePressed(x, y) {

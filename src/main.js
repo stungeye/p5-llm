@@ -31,6 +31,7 @@ const sketch = (p) => {
         guiManager
       )
     );
+    /*
     guiManager.addWindow(
       new GuiWindow(
         p,
@@ -55,11 +56,13 @@ const sketch = (p) => {
         guiManager
       )
     );
+    */
   };
 
   p.draw = () => {
     p.background(220);
     guiManager.displayWindows();
+    connectionManager.display(p, p.width - 300, 50);
   };
 
   p.mousePressed = () => {
