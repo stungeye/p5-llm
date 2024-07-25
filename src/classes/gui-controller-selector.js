@@ -3,8 +3,8 @@ import GuiControllerTypes from "./gui-controller-types";
 import GuiWindow from "./gui-window";
 
 export default class GuiControllerSelector extends GuiController {
-  constructor(p, connectionManager) {
-    super(p, connectionManager);
+  constructor(p, guiConnectionManager) {
+    super(p, guiConnectionManager);
     this.select = this.p.createSelect();
     Object.keys(GuiControllerTypes).forEach((key) => {
       this.select.option(key);
@@ -28,7 +28,7 @@ export default class GuiControllerSelector extends GuiController {
     const newControllerData = GuiControllerTypes[this.select.value()];
     const newController = newControllerData.factory(
       this.p,
-      this.connectionManager
+      this.guiConnectionManager
     );
     console.log(newController);
     this.parentWindow.guiManager.addWindow(

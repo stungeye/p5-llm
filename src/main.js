@@ -1,13 +1,14 @@
 import p5 from "p5";
 import GuiManager from "./classes/gui-manager";
-import GuiController from "./classes/gui-controller";
 import GuiControllerSelector from "./classes/gui-controller-selector";
 import GuiWindow from "./classes/gui-window";
+import GuiConnectionManager from "./classes/gui-connection-manager";
 import VsConnectionManager from "./classes/vs-connection-manager";
 //import testFunction from "./test";
 
 const sketch = (p) => {
   let guiManager;
+  let guiConnectionManager;
   let connectionManager;
 
   p.setup = () => {
@@ -16,6 +17,7 @@ const sketch = (p) => {
 
     guiManager = new GuiManager(p);
     connectionManager = new VsConnectionManager();
+    guiConnectionManager = new GuiConnectionManager(p, connectionManager);
 
     // Add some windows with different controllers
 
@@ -27,7 +29,7 @@ const sketch = (p) => {
         200,
         150,
         "Create Windows",
-        new GuiControllerSelector(p, connectionManager),
+        new GuiControllerSelector(p, guiConnectionManager),
         guiManager
       )
     );
@@ -62,7 +64,7 @@ const sketch = (p) => {
   p.draw = () => {
     p.background(220);
     guiManager.displayWindows();
-    connectionManager.display(p, p.width - 300, 50);
+    guiConnectionManager.display();
   };
 
   p.mousePressed = () => {

@@ -4,8 +4,8 @@ import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
 
 export default class GuiControllerUserFunction extends GuiController {
-  constructor(p, connectionManager) {
-    super(p, connectionManager);
+  constructor(p, guiConnectionManager) {
+    super(p, guiConnectionManager);
 
     this.outputPinTypeSelect = this.p.createSelect();
     this.outputPinTypeSelect.changed(() => {

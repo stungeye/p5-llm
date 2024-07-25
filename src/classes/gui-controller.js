@@ -2,10 +2,10 @@ import { VsOutputPin, VsInputPin } from "./vs-pin";
 import GuiPin from "./gui-pin";
 
 export default class GuiController {
-  constructor(p, connectionManager) {
+  constructor(p, guiConnectionManager) {
     this.p = p;
     this.parentWindow = null;
-    this.connectionManager = connectionManager;
+    this.guiConnectionManager = guiConnectionManager;
     this.node = null;
     this.outputPin = null;
     this.outputGuiPin = null;
@@ -19,7 +19,12 @@ export default class GuiController {
 
   setOutputPin(pinType) {
     this.outputPin = new VsOutputPin(pinType);
-    this.outputGuiPin = new GuiPin(this.p, this.outputPin);
+    this.outputGuiPin = new GuiPin(
+      this.p,
+      this.outputPin,
+      this.parentWindow,
+      this.guiConnectionManager
+    );
   }
 
   addInputPin(pinType, name) {
@@ -28,7 +33,11 @@ export default class GuiController {
 
     const newPin = new VsInputPin(pinType, name);
     this.inputPins.push(newPin);
-    this.inputGuiPins.push(new GuiPin(this.p, newPin));
+    this.inputGuiPins.push(
+      new GuiPin(this.p, newPin, this.parentWindow, this.guiConnectionManager)
+    );
+
+    this.node.addInput(newPin);
 
     return true;
   }
@@ -42,10 +51,12 @@ export default class GuiController {
     this.inputGuiPins = this.inputGuiPins.filter(
       (inputGuiPin) => inputGuiPin.pin !== pin
     );
+    this.node.removeInputPin(pin);
   }
 
   display() {
-    const [x, y, width, _] = this.parentWindow.getControllerWindowDimensions();
+    const [x, y, width, height] =
+      this.parentWindow.getControllerWindowDimensions();
     this.p.push();
     if (this.outputGuiPin) {
       this.outputGuiPin.display(x + width, y + 10);
@@ -55,6 +66,10 @@ export default class GuiController {
       this.inputGuiPins.forEach((inputGuiPin, index) => {
         inputGuiPin.display(x - 8, y + 25 * (index + 1));
       });
+    }
+
+    if (this.node) {
+      this.node.display(this.p, x, y + height + 15);
     }
     this.p.pop();
   }

@@ -13,7 +13,7 @@ export default class VsConnection {
         this.inputPin.getNode().id
       }`
     );
-    console.log(`Propagating values is ${this.outputPin.getValue()}`);
+    console.log(`Propagating value is ${this.outputPin.getValue()}`);
     this.inputPin.setValue(this.outputPin.getValue());
   }
 }

@@ -2,13 +2,16 @@ import { VsInputPin, VsOutputPin } from "./vs-pin";
 import Config from "./config";
 
 export default class GuiPin {
-  constructor(p, pin) {
+  constructor(p, pin, parentWindow, guiConnectionManager) {
     this.p = p;
     this.pin = pin;
+    this.parentWindow = parentWindow;
+    this.guiConnectionManager = guiConnectionManager;
     this.colors = Config.colors[pin.getType()];
     this.width = 14;
     this.height = 14;
     this.isPressed = false;
+    this.guiConnection = null;
   }
 
   getPin() {
@@ -30,6 +33,9 @@ export default class GuiPin {
     }
   }
 
+  // Since we now have access to the parent window, this method could
+  // be refactored to use the parent window's location instead of
+  // passing in x and y.
   display(x, y) {
     this.p.push();
     this.colors.setColors(this.p, this.isHovered(x, y), this.isPressed);

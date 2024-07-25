@@ -23,6 +23,13 @@ export default class VsNode {
     pin.setNode(this);
   }
 
+  removeInput(pin) {
+    if (!(pin instanceof VsInputPin)) {
+      throw new Error(this.buildErrorString("Invalid input pin."));
+    }
+    this.inputs = this.inputs.filter((input) => input.id !== pin.id);
+  }
+
   getInputs() {
     return this.inputs;
   }
@@ -73,5 +80,13 @@ export default class VsNode {
 
   value() {
     return this.output ? this.output.getValue() : null;
+  }
+
+  display(p, x, y) {
+    p.push();
+    p.translate(x, y);
+    p.fill(0);
+    p.text(`${this.id} ${this.inputs.length} ${this.output ? 1 : 0}`, 0, 0);
+    p.pop();
   }
 }
