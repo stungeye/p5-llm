@@ -22,9 +22,10 @@ export default class GuiControllerLlmFunction extends GuiController {
             `${result.functionSignature} {\n  ${result.functionBody}\n}`
           );
           this.parentWindow.setTitle(result.functionName);
+          this.configureNode(result.output, result.inputs, result.functionBody);
         } else {
           this.valueIsValid = false;
-          this.llmFunction.value("Error: " + JSON.stringify(result));
+          this.llmFunction.value("// Error: " + JSON.stringify(result));
         }
       }
     });
@@ -41,65 +42,50 @@ export default class GuiControllerLlmFunction extends GuiController {
     this.llmFunction = this.p.createElement("textarea");
     // make the textarea element non-resizable
     this.llmFunction.style("resize", "none");
+
+    // create VsNode of type Function and configure it.
+    this.node = new VsNode(VsNodeTypes.Function);
   }
 
-  newInputPin() {
-    if (
-      this.addInputPin(
-        VsPinTypes[this.inputPinTypeSelect.value()],
-        this.newInputPinName.value()
-      )
-    ) {
-      // Clear input if pin was successfully added.
-      this.newInputPinName.value("");
-      this.configureNode();
-    }
+  updateInputPinTypes(inputPinsData) {
+    // Remove current input pins and their associated connections:
+    this.inputGuiPins.forEach((inputGuiPin) => {
+      const connections =
+        this.guiConnectionManager.connectionManager.getConnectionsForPin(
+          inputGuiPin.pin
+        );
+      this.guiConnectionManager.removeConnections(connections);
+    });
+
+    inputPinsData.forEach((inputPinData) => {
+      console.log(inputPinData);
+      this.addInputPin(VsPinTypes[inputPinData.type], inputPinData.name);
+    });
   }
 
-  updateOutputPinType() {
-    const newPinType = VsPinTypes[this.outputPinTypeSelect.value()];
-    if (this.outputGuiPin && this.outputGuiPin.pin.getType() === newPinType) {
-      return;
-    }
+  updateOutputPinType(pinTypeKey) {
+    const newPinType = VsPinTypes[pinTypeKey];
 
     if (this.outputGuiPin) {
       const connections =
         this.guiConnectionManager.connectionManager.getConnectionsForPin(
           this.outputGuiPin.pin
         );
-      if (connections.length > 0) {
-        if (
-          confirm(
-            "Changing the output pin will remove all connections. Are you sure you want to continue?"
-          )
-        ) {
-          this.guiConnectionManager.removeConnections(connections);
-        } else {
-          // reset the select to the previous value
-          this.outputPinTypeSelect.value(
-            Object.keys(VsPinTypes).find(
-              (key) => VsPinTypes[key] === this.outputGuiPin.pin.getType()
-            )
-          );
-          return;
-        }
-      }
+      this.guiConnectionManager.removeConnections(connections);
     }
 
     this.setOutputPin(newPinType);
   }
 
-  configureNode() {
-    this.updateOutputPinType();
+  configureNode(outputPinData, inputPinsData, operation) {
+    this.updateOutputPinType(outputPinData.type);
+    this.updateInputPinTypes(inputPinsData);
 
     if (this.node) {
       // Set the operation while splatting out the input pin names:
       try {
         this.node.setOperation(
-          new Function(
-            ...this.getInputPinNames(),
-            this.userDefinedFunction.value()
-          )
+          new Function(...this.getInputPinNames(), operation)
         );
         this.changeValue();
       } catch (e) {
@@ -162,5 +148,6 @@ export default class GuiControllerLlmFunction extends GuiController {
     this.inferenceButton.remove();
     this.userPrompt.remove();
     this.llmFunction.remove();
+    this.providerSelect.remove();
   }
 }

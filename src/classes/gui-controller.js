@@ -60,6 +60,9 @@ export default class GuiController {
       new GuiPin(this.p, newPin, this.guiConnectionManager)
     );
 
+    console.log("created input pin ", newPin);
+    console.log("Node: ", this.node);
+
     if (this.node) {
       this.node.addInput(newPin);
     }
