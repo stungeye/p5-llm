@@ -173,7 +173,25 @@ export default class GuiController {
     });
   }
 
+  destroy() {
+    // Remove all connections associated with the pins
+    if (this.outputGuiPin) {
+      this.guiConnectionManager.removeConnections(
+        this.guiConnectionManager.connectionManager.getConnectionsForPin(
+          this.outputGuiPin.pin
+        )
+      );
+    }
+
+    this.inputGuiPins.forEach((inputGuiPin) => {
+      this.guiConnectionManager.removeConnections(
+        this.guiConnectionManager.connectionManager.getConnectionsForPin(
+          inputGuiPin.pin
+        )
+      );
+    });
+  }
+
   // Methods to be overridden by child classes for specific functionalities
   execute() {}
-  destroy() {}
 }

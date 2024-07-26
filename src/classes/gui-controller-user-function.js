@@ -154,6 +154,7 @@ export default class GuiControllerUserFunction extends GuiController {
   }
 
   destroy() {
+    super.destroy();
     this.outputPinTypeSelect.remove();
     this.inputPinTypeSelect.remove();
     this.newInputPinName.remove();
