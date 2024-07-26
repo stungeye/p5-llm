@@ -2,12 +2,20 @@ import GuiController from "./gui-controller";
 import { VsPinTypes } from "./vs-pin-types";
 import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
+import promptForFunction from "./llm-function-prompt";
 
 export default class GuiControllerLlmFunction extends GuiController {
   constructor(p, guiConnectionManager) {
     super(p, guiConnectionManager);
 
     this.inferenceButton = this.p.createButton("🪄");
+    this.inferenceButton.mousePressed(async () => {
+      const functionData = await promptForFunction(this.userPrompt.value());
+      if (functionData) {
+        console.log(functionData);
+        this.llmFunction.value(JSON.stringify(functionData, null, 2));
+      }
+    });
 
     this.userPrompt = this.p.createElement("textarea");
     // make the textarea element non-resizable
@@ -135,5 +143,6 @@ export default class GuiControllerLlmFunction extends GuiController {
     super.destroy();
     this.inferenceButton.remove();
     this.userPrompt.remove();
+    this.llmFunction.remove();
   }
 }

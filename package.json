@@ -12,7 +12,8 @@
     "vite": "^5.3.1"
   },
   "dependencies": {
-    "langchain": "^0.2.9",
+    "@langchain/groq": "^0.0.15",
+    "langchain": "^0.2.11",
     "p5": "^1.9.4",
     "uuid": "^10.0.0"
   }
