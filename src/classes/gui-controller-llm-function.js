@@ -13,7 +13,18 @@ export default class GuiControllerLlmFunction extends GuiController {
       const functionData = await promptForFunction(this.userPrompt.value());
       if (functionData) {
         console.log(functionData);
-        this.llmFunction.value(JSON.stringify(functionData, null, 2));
+        const functionSignature = `function ${
+          functionData.functionName
+        }(${functionData.inputs.map((i) => i.name).join(", ")})`;
+        const functionBody = (functionData.functionCode.match(
+          /(?<=\{)[\s\S]*(?=\}$)/
+        ) || [""])[0].trim();
+        // Ensure that the functionCode starts with the function signature
+        if (!functionData.functionCode.startsWith(functionSignature)) {
+          console.log("Function body does not start with function signature");
+        }
+
+        this.llmFunction.value(`${functionSignature} {\n  ${functionBody}\n}`);
       }
     });
 
