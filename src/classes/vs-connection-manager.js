@@ -27,6 +27,7 @@ export default class VsConnectionManager {
     this.connections = this.connections.filter(
       (conn) => !connections.includes(conn)
     );
+    this.resetNodes();
   }
 
   addConnection(outputPin, inputPin) {
@@ -46,10 +47,10 @@ export default class VsConnectionManager {
     const connection = new VsConnection(outputPin, inputPin);
     this.connections.push(connection);
 
-    // Track nodes for topological sorting
-    this.nodes.add(outputPin.getNode());
-    this.nodes.add(inputPin.getNode());
+    this.resetNodes();
+  }
 
+  resetNodes() {
     // Reset the nodes to an empty set
     this.nodes = new Set();
     // Add all nodes from the connections to the nodes set
