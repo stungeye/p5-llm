@@ -99,6 +99,8 @@ export default class GuiWindow {
     ) {
       this.controller.destroy();
       this.guiManager.removeWindow(this);
+      // Going to have to add code here to remove
+      // all connections/nodes that are connected to this controller
     }
   }
 

@@ -26,6 +26,24 @@ export default class GuiManager {
     this.windows.forEach((window) => window.display());
   }
 
+  getAllPinsWithLocations() {
+    let pins = [];
+    this.windows.forEach((window) => {
+      pins = pins.concat(window.controller.getAllPinsWithLocations());
+    });
+    return pins;
+  }
+
+  getHoveredPin() {
+    for (const window of this.windows) {
+      const pin = window.controller.getHoveredPin();
+      if (pin) {
+        return pin;
+      }
+    }
+    return null;
+  }
+
   handleMousePressed() {
     this.windows.forEach((window) => window.handleMousePressed());
   }

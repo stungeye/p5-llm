@@ -3,6 +3,7 @@ export const VsPinTypes = Object.freeze({
   String: "string",
   Boolean: "boolean",
   Object: "object",
+  Array: "array",
   Function: "function",
 });
 
@@ -35,10 +36,31 @@ export function parsePinValue(type, value) {
       break;
     case VsPinTypes.Object:
       if (typeof value === "object") {
+        const proto = Object.getPrototypeOf(value);
+        if (proto === null || proto === Object.prototype) {
+          return value;
+        }
+      } else if (typeof value === "string") {
+        try {
+          let possibleObject = JSON.parse(value);
+          const proto = Object.getPrototypeOf(possibleObject);
+          if (proto === null || proto === Object.prototype) {
+            return possibleObject;
+          }
+        } catch (e) {
+          return null;
+        }
+      }
+      break;
+    case VsPinTypes.Array:
+      if (Array.isArray(value)) {
         return value;
       } else if (typeof value === "string") {
         try {
-          return JSON.parse(value);
+          let possibleArray = JSON.parse(value);
+          if (Array.isArray(possibleArray)) {
+            return possibleArray;
+          }
         } catch (e) {
           return null;
         }

@@ -50,24 +50,55 @@ export default class GuiControllerUserFunction extends GuiController {
     }
   }
 
-  configureNode() {
-    // Sets the output pin of the node to the selected pin type
-    // This should actually be set by the user in the GUI.
-    this.setOutputPin(VsPinTypes[this.outputPinTypeSelect.value()]);
+  updateOutputPinType() {
+    const newPinType = VsPinTypes[this.outputPinTypeSelect.value()];
+    if (this.outputGuiPin && this.outputGuiPin.pin.getType() === newPinType) {
+      return;
+    }
 
-    // Currently sets the operation to a placeholder function that always returns true.
-    // Should also set input pins.
+    if (this.outputGuiPin) {
+      const connections =
+        this.guiConnectionManager.connectionManager.getConnectionsForPin(
+          this.outputGuiPin.pin
+        );
+      if (connections.length > 0) {
+        if (
+          confirm(
+            "Changing the output pin will remove all connections. Are you sure you want to continue?"
+          )
+        ) {
+          this.guiConnectionManager.removeConnections(connections);
+        } else {
+          // reset the select to the previous value
+          this.outputPinTypeSelect.value(
+            Object.keys(VsPinTypes).find(
+              (key) => VsPinTypes[key] === this.outputGuiPin.pin.getType()
+            )
+          );
+          return;
+        }
+      }
+    }
+
+    this.setOutputPin(newPinType);
+  }
+
+  configureNode() {
+    this.updateOutputPinType();
+
     if (this.node) {
-      this.node.setOutput(this.outputPin);
       // Set the operation while splatting out the input pin names:
-      this.node.setOperation(
-        new Function(
-          ...this.getInputPinNames(),
-          this.userDefinedFunction.value()
-        )
-      );
-      this.changeValue();
-      console.log(this.node.operation);
+      try {
+        this.node.setOperation(
+          new Function(
+            ...this.getInputPinNames(),
+            this.userDefinedFunction.value()
+          )
+        );
+        this.changeValue();
+      } catch (e) {
+        console.log("Error setting operation:", e);
+      }
     } else {
       console.log("Node is null when trying to set output pin.");
     }

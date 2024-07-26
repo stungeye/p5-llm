@@ -10,6 +10,7 @@ const sketch = (p) => {
   let guiManager;
   let guiConnectionManager;
   let connectionManager;
+  let playButton;
 
   p.setup = () => {
     //testFunction();
@@ -17,7 +18,17 @@ const sketch = (p) => {
 
     guiManager = new GuiManager(p);
     connectionManager = new VsConnectionManager();
-    guiConnectionManager = new GuiConnectionManager(p, connectionManager);
+    guiConnectionManager = new GuiConnectionManager(
+      p,
+      guiManager,
+      connectionManager
+    );
+
+    playButton = p.createButton("Play");
+    playButton.position(30, 19);
+    playButton.mousePressed(() => {
+      connectionManager.execute();
+    });
 
     // Add some windows with different controllers
 
@@ -63,20 +74,23 @@ const sketch = (p) => {
 
   p.draw = () => {
     p.background(220);
-    guiManager.displayWindows();
     guiConnectionManager.display();
+    guiManager.displayWindows();
   };
 
   p.mousePressed = () => {
     guiManager.handleMousePressed();
+    guiConnectionManager.handleMousePressed();
   };
 
   p.mouseDragged = () => {
     guiManager.handleMouseDragged();
+    guiConnectionManager.handleMouseDragged();
   };
 
   p.mouseReleased = () => {
     guiManager.handleMouseReleased();
+    guiConnectionManager.handleMouseReleased();
   };
 
   p.windowResized = () => {

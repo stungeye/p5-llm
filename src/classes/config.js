@@ -44,6 +44,14 @@ const Config = {
       "#228B22", // pressedStroke (forest green)
       "#32CD32" // pressedFill (lime green)
     ),
+    [VsPinTypes.Array]: new GuiButtonColors(
+      "#FF8C00", // defaultStroke (dark orange)
+      "#FFD700", // defaultFill (golden yellow)
+      "#FF4500", // hoverStroke (orange red)
+      "#FFA500", // hoverFill (orange)
+      "#B8860B", // pressedStroke (dark goldenrod)
+      "#FFD700" // pressedFill (golden yellow)
+    ),
     [VsPinTypes.Object]: new GuiButtonColors(
       "#8A2BE2", // defaultStroke (blue violet)
       "#DDA0DD", // defaultFill (plum)

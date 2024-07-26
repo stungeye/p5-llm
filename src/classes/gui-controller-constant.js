@@ -32,7 +32,6 @@ export default class GuiControllerConstant extends GuiController {
 
     // Set the operation of the node to always return the input value.
     if (this.node) {
-      this.node.setOutput(this.outputPin);
       this.node.setOperation(() => this.input.value());
       this.valueIsValid = this.node.execute();
     } else {

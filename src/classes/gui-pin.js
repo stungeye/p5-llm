@@ -2,16 +2,14 @@ import { VsInputPin, VsOutputPin } from "./vs-pin";
 import Config from "./config";
 
 export default class GuiPin {
-  constructor(p, pin, parentWindow, guiConnectionManager) {
+  constructor(p, pin, guiConnectionManager) {
     this.p = p;
     this.pin = pin;
-    this.parentWindow = parentWindow;
     this.guiConnectionManager = guiConnectionManager;
     this.colors = Config.colors[pin.getType()];
     this.width = 14;
     this.height = 14;
     this.isPressed = false;
-    this.guiConnection = null;
   }
 
   getPin() {

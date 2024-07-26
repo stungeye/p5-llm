@@ -13,15 +13,30 @@ export default class VsConnectionManager {
     );
   }
 
+  getConnections() {
+    return this.connections;
+  }
+
+  getConnectionsForPin(pin) {
+    return this.connections.filter(
+      (conn) => conn.outputPin === pin || conn.inputPin === pin
+    );
+  }
+
+  removeConnections(connections) {
+    this.connections = this.connections.filter(
+      (conn) => !connections.includes(conn)
+    );
+  }
+
   addConnection(outputPin, inputPin) {
     if (outputPin.getType() !== inputPin.getType()) {
       console.log("Connection failed: Type mismatch");
       return;
     }
 
-    // Remove existing connections for the input pin
-    // Outputs can be connected to multiple inputs
-    // but inputs can only have one connection.
+    // Does this input pin already have a connection?
+    // If so, remove it.
     this.connections = this.connections.filter(
       (conn) => conn.inputPin !== inputPin
     );
@@ -34,6 +49,14 @@ export default class VsConnectionManager {
     // Track nodes for topological sorting
     this.nodes.add(outputPin.getNode());
     this.nodes.add(inputPin.getNode());
+
+    // Reset the nodes to an empty set
+    this.nodes = new Set();
+    // Add all nodes from the connections to the nodes set
+    this.connections.forEach((conn) => {
+      this.nodes.add(conn.outputPin.getNode());
+      this.nodes.add(conn.inputPin.getNode());
+    });
   }
 
   removeConnection(outputPin, inputPin) {
@@ -117,19 +140,13 @@ export default class VsConnectionManager {
     p.text("Connections", 0, 40);
     this.connections.forEach((conn, index) => {
       p.text(
-        `- ${index + 1}: ${conn.outputPin.getNode().id} -> ${
-          conn.inputPin.getNode().id
-        }`,
+        `- ${index + 1}: ${conn.outputPin
+          .getNode()
+          .id.substring(0, 6)} -> ${conn.inputPin
+          .getNode()
+          .id.substring(0, 6)}`,
         0,
         60 + index * 20
-      );
-    });
-    p.text("Nodes", 0, 60 + this.connections.length * 20);
-    this.nodes.forEach((node, index) => {
-      p.text(
-        `- ${index + 1}: ${node.id}`,
-        0,
-        80 + this.connections.length * 20 + index * 20
       );
     });
     p.pop();

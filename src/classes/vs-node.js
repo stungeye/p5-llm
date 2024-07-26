@@ -30,6 +30,10 @@ export default class VsNode {
     this.inputs = this.inputs.filter((input) => input.id !== pin.id);
   }
 
+  doesInputNameExist(name) {
+    return this.inputs.find((input) => input.name === name) !== undefined;
+  }
+
   getInputs() {
     return this.inputs;
   }
