@@ -2,7 +2,7 @@ import GuiController from "./gui-controller";
 import { VsPinTypes } from "./vs-pin-types";
 import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
-import promptForFunction from "./llm-function-prompt";
+import { LlmProviders, promptForFunction } from "./llm-function-prompt";
 
 export default class GuiControllerLlmFunction extends GuiController {
   constructor(p, guiConnectionManager) {
@@ -10,22 +10,28 @@ export default class GuiControllerLlmFunction extends GuiController {
 
     this.inferenceButton = this.p.createButton("🪄");
     this.inferenceButton.mousePressed(async () => {
-      const functionData = await promptForFunction(this.userPrompt.value());
-      if (functionData) {
-        console.log(functionData);
-        const functionSignature = `function ${
-          functionData.functionName
-        }(${functionData.inputs.map((i) => i.name).join(", ")})`;
-        const functionBody = (functionData.functionCode.match(
-          /(?<=\{)[\s\S]*(?=\}$)/
-        ) || [""])[0].trim();
-        // Ensure that the functionCode starts with the function signature
-        if (!functionData.functionCode.startsWith(functionSignature)) {
-          console.log("Function body does not start with function signature");
+      const result = await promptForFunction(
+        this.userPrompt.value(),
+        this.providerSelect.value()
+      );
+      if (result) {
+        console.log(result);
+        if (result.success) {
+          this.valueIsValid = true;
+          this.llmFunction.value(
+            `${result.functionSignature} {\n  ${result.functionBody}\n}`
+          );
+          this.parentWindow.setTitle(result.functionName);
+        } else {
+          this.valueIsValid = false;
+          this.llmFunction.value("Error: " + JSON.stringify(result));
         }
-
-        this.llmFunction.value(`${functionSignature} {\n  ${functionBody}\n}`);
       }
+    });
+
+    this.providerSelect = this.p.createSelect();
+    Object.keys(LlmProviders).forEach((key) => {
+      this.providerSelect.option(key, LlmProviders[key]);
     });
 
     this.userPrompt = this.p.createElement("textarea");
@@ -140,6 +146,7 @@ export default class GuiControllerLlmFunction extends GuiController {
 
     // Reposition selects and button
     this.inferenceButton.position(x + 290, y + 15);
+    this.providerSelect.position(x + 200, y + 15);
 
     // Resize and reposition input
     this.userPrompt.position(x + 20, y + 60);

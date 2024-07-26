@@ -104,6 +104,10 @@ export default class GuiWindow {
     }
   }
 
+  setTitle(newTitle) {
+    this.titleBar.setTitle(newTitle);
+  }
+
   resizeWindow() {
     let deltaX = this.p.movedX;
     let deltaY = this.p.movedY;

@@ -132,6 +132,10 @@ export default class GuiWindowTitleBar {
     return this.title;
   }
 
+  setTitle(newTitle) {
+    this.title = newTitle;
+  }
+
   move(x, y, parentWindow) {
     // We need to keep the mouse on the move button.
     let offsetX = x - this.moveButtonOffsetX;

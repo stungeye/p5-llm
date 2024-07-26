@@ -3,7 +3,13 @@ import { ChatGroq } from "@langchain/groq";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 
-export default async function promptForFunction(userPrompt, provider = "groq") {
+export const LlmProviders = Object.freeze({
+  OpenAi: "openai",
+  Groq: "groq",
+});
+
+export async function promptForFunction(userPrompt, provider = "openai") {
+  console.log(provider);
   const model =
     provider === "openai"
       ? new ChatOpenAI({
@@ -42,5 +48,21 @@ export default async function promptForFunction(userPrompt, provider = "groq") {
   ]);
   const chain = prompt.pipe(modelWithStructuredOutput);
   const result = await chain.invoke({});
+
+  if (!result || !result.functionName) {
+    return { success: false, data: result };
+  }
+
+  const functionSignature = `function ${result.functionName}(${result.inputs
+    .map((i) => i.name)
+    .join(", ")})`;
+  const functionBody = (result.functionCode.match(/(?<=\{)[\s\S]*(?=\}$)/) || [
+    "",
+  ])[0].trim();
+
+  result.functionSignature = functionSignature;
+  result.functionBody = functionBody;
+  result.success = result.functionCode.startsWith(functionSignature);
+
   return result;
 }
