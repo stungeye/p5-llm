@@ -1,6 +1,5 @@
 import GuiController from "./gui-controller";
 import GuiControllerTypes from "./gui-controller-types";
-import GuiWindow from "./gui-window";
 
 export default class GuiControllerSelector extends GuiController {
   constructor(p, guiConnectionManager) {
@@ -13,38 +12,13 @@ export default class GuiControllerSelector extends GuiController {
     this.newWindowButton = this.p.createButton("New Window");
 
     // add event listener to button
-    this.newWindowButton.mousePressed(() => this.createNewWindow());
-  }
-
-  createNewWindow() {
-    console.log(
-      "Creating new window with controller type:",
-      this.select.value()
-    );
-
-    const [x, y, width, height] =
-      this.parentWindow.getControllerWindowDimensions();
-    // A new window directly below the current window
-    const newControllerData = GuiControllerTypes[this.select.value()];
-    const newController = newControllerData.factory(
-      this.p,
-      this.guiConnectionManager
-    );
-    console.log(newController);
-    this.parentWindow.guiManager.addWindow(
-      new GuiWindow(
-        this.p,
-        x,
-        y + height + 10,
-        newControllerData.width,
-        newControllerData.height,
-        this.select.value(),
-        newController,
-        this.parentWindow.guiManager
+    this.newWindowButton.mousePressed(() =>
+      this.createNewWindow(
+        GuiControllerTypes[this.select.value()],
+        this.select.value()
       )
     );
   }
-
   display() {
     const [x, y, width, height] =
       this.parentWindow.getControllerWindowDimensions();

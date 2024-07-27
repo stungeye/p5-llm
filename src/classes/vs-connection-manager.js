@@ -23,6 +23,12 @@ export default class VsConnectionManager {
     );
   }
 
+  pinHasConnections(pin) {
+    return this.connections.some(
+      (conn) => conn.outputPin === pin || conn.inputPin === pin
+    );
+  }
+
   removeConnections(connections) {
     this.connections = this.connections.filter(
       (conn) => !connections.includes(conn)

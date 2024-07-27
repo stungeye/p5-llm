@@ -46,79 +46,50 @@ export default class GuiControllerUserFunction extends GuiController {
     ) {
       // Clear input if pin was successfully added.
       this.newInputPinName.value("");
-      this.configureNode();
     }
+
+    this.configureNode();
   }
 
-  updateOutputPinType() {
-    const newPinType = VsPinTypes[this.outputPinTypeSelect.value()];
-    if (this.outputGuiPin && this.outputGuiPin.pin.getType() === newPinType) {
-      return;
-    }
+  setOutputPinSelect(pinType) {
+    this.outputPinTypeSelect.value(
+      Object.keys(VsPinTypes).find((key) => VsPinTypes[key] === pinType)
+    );
+  }
 
-    if (this.outputGuiPin) {
-      const connections =
-        this.guiConnectionManager.connectionManager.getConnectionsForPin(
-          this.outputGuiPin.pin
-        );
-      if (connections.length > 0) {
-        if (
-          confirm(
-            "Changing the output pin will remove all connections. Are you sure you want to continue?"
-          )
-        ) {
-          this.guiConnectionManager.removeConnections(connections);
-        } else {
-          // reset the select to the previous value
-          this.outputPinTypeSelect.value(
-            Object.keys(VsPinTypes).find(
-              (key) => VsPinTypes[key] === this.outputGuiPin.pin.getType()
-            )
-          );
-          return;
-        }
+  setUserDefinedFunction(value) {
+    this.userDefinedFunction.value(value);
+  }
+
+  updateOutputPinType(newPinType) {
+    if (
+      this.outputGuiPin &&
+      this.guiConnectionManager.connectionManager.pinHasConnections(
+        this.outputGuiPin.pin
+      )
+    ) {
+      if (
+        !confirm(
+          "Changing the output pin will remove all connections. Are you sure you want to continue?"
+        )
+      ) {
+        // reset the select to the previous value
+        this.setOutputPinSelect(this.outputGuiPin.pin.getType());
+        return;
       }
     }
 
-    this.setOutputPin(newPinType);
+    super.updateOutputPinType(newPinType);
   }
 
   configureNode() {
-    this.updateOutputPinType();
-
-    if (this.node) {
-      // Set the operation while splatting out the input pin names:
-      try {
-        this.node.setOperation(
-          new Function(
-            ...this.getInputPinNames(),
-            this.userDefinedFunction.value()
-          )
-        );
-        this.changeValue();
-      } catch (e) {
-        console.log("Error setting operation:", e);
-      }
-    } else {
-      console.log("Node is null when trying to set output pin.");
-    }
+    this.updateOutputPinType(VsPinTypes[this.outputPinTypeSelect.value()]);
+    this.setNodeOperation(this.userDefinedFunction.value());
   }
 
   inputResized() {
     // Set the input's width and height properties to the input elements width and height
     this.userDefinedFunction.width = this.userDefinedFunction.elt.offsetWidth;
-  }
-
-  changeValue() {
-    try {
-      this.valueIsValid = this.node.execute();
-    } catch (e) {
-      console.log(
-        "Error executing function:",
-        this.userDefinedFunction.value()
-      );
-      this.valueIsValid = false;
-    }
   }
 
   display() {

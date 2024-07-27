@@ -1,5 +1,6 @@
 import { VsOutputPin, VsInputPin } from "./vs-pin";
 import GuiPin from "./gui-pin";
+import GuiWindow from "./gui-window";
 
 export default class GuiController {
   constructor(p, guiConnectionManager) {
@@ -9,6 +10,7 @@ export default class GuiController {
     this.node = null;
     this.outputGuiPin = null;
     this.inputGuiPins = [];
+    this.valueIsValid = false;
   }
 
   setParentWindow(window) {
@@ -60,9 +62,6 @@ export default class GuiController {
       new GuiPin(this.p, newPin, this.guiConnectionManager)
     );
 
-    console.log("created input pin ", newPin);
-    console.log("Node: ", this.node);
-
     if (this.node) {
       this.node.addInput(newPin);
     }
@@ -83,6 +82,74 @@ export default class GuiController {
     if (this.node) {
       this.node.removeInputPin(pin);
     }
+  }
+
+  updateOutputPinType(newPinType) {
+    if (this.outputGuiPin && this.outputGuiPin.pin.getType() === newPinType) {
+      return;
+    }
+
+    if (this.outputGuiPin) {
+      const connections =
+        this.guiConnectionManager.connectionManager.getConnectionsForPin(
+          this.outputGuiPin.pin
+        );
+      this.guiConnectionManager.removeConnections(connections);
+    }
+
+    this.setOutputPin(newPinType);
+  }
+
+  setNodeOperation(operation) {
+    if (this.node) {
+      // Set the operation while splatting out the input pin names:
+      try {
+        this.node.setOperation(
+          new Function(...this.getInputPinNames(), operation)
+        );
+        this.changeValue();
+      } catch (e) {
+        console.log("Error setting operation:", e);
+      }
+    } else {
+      console.log("Node is null when trying to set output pin.");
+    }
+  }
+
+  changeValue() {
+    try {
+      this.valueIsValid = this.node.execute();
+    } catch (e) {
+      console.log(
+        "Error executing function:",
+        this.userDefinedFunction.value()
+      );
+      this.valueIsValid = false;
+    }
+  }
+
+  createNewWindow(guiControllerData, title) {
+    const [x, y, width, height] =
+      this.parentWindow.getControllerWindowDimensions();
+    // A new window directly below the current window
+    const newController = guiControllerData.factory(
+      this.p,
+      this.guiConnectionManager
+    );
+    const newWindow = new GuiWindow(
+      this.p,
+      x,
+      y + height + 10,
+      guiControllerData.width,
+      guiControllerData.height,
+      title,
+      newController,
+      this.parentWindow.guiManager
+    );
+
+    this.parentWindow.guiManager.addWindow(newWindow);
+
+    return newWindow;
   }
 
   getHoveredPin() {

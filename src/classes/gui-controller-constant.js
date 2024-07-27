@@ -71,6 +71,7 @@ export default class GuiControllerConstant extends GuiController {
   }
 
   destroy() {
+    super.destroy();
     this.select.remove();
     this.input.remove();
   }

@@ -1,4 +1,5 @@
 import GuiController from "./gui-controller";
+import GuiControllerTypes from "./gui-controller-types";
 import { VsPinTypes } from "./vs-pin-types";
 import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
@@ -18,11 +19,25 @@ export default class GuiControllerLlmFunction extends GuiController {
         console.log(result);
         if (result.success) {
           this.valueIsValid = true;
-          this.llmFunction.value(
-            `${result.functionSignature} {\n  ${result.functionBody}\n}`
+          this.userPrompt.value("");
+
+          const newFunctionWindow = this.createNewWindow(
+            GuiControllerTypes.UserFunction,
+            result.functionName
           );
-          this.parentWindow.setTitle(result.functionName);
-          this.configureNode(result.output, result.inputs, result.functionBody);
+          const newGuiController = newFunctionWindow.getGuiController();
+
+          newGuiController.setOutputPinSelect(VsPinTypes[result.output.type]);
+          newGuiController.setUserDefinedFunction(result.functionBody);
+
+          result.inputs.forEach((inputPinData) => {
+            newGuiController.addInputPin(
+              VsPinTypes[inputPinData.type],
+              inputPinData.name
+            );
+          });
+
+          newGuiController.configureNode();
         } else {
           this.valueIsValid = false;
           this.llmFunction.value("// Error: " + JSON.stringify(result));
@@ -47,70 +62,9 @@ export default class GuiControllerLlmFunction extends GuiController {
     this.node = new VsNode(VsNodeTypes.Function);
   }
 
-  updateInputPinTypes(inputPinsData) {
-    // Remove current input pins and their associated connections:
-    this.inputGuiPins.forEach((inputGuiPin) => {
-      const connections =
-        this.guiConnectionManager.connectionManager.getConnectionsForPin(
-          inputGuiPin.pin
-        );
-      this.guiConnectionManager.removeConnections(connections);
-    });
-
-    inputPinsData.forEach((inputPinData) => {
-      console.log(inputPinData);
-      this.addInputPin(VsPinTypes[inputPinData.type], inputPinData.name);
-    });
-  }
-
-  updateOutputPinType(pinTypeKey) {
-    const newPinType = VsPinTypes[pinTypeKey];
-
-    if (this.outputGuiPin) {
-      const connections =
-        this.guiConnectionManager.connectionManager.getConnectionsForPin(
-          this.outputGuiPin.pin
-        );
-      this.guiConnectionManager.removeConnections(connections);
-    }
-
-    this.setOutputPin(newPinType);
-  }
-
-  configureNode(outputPinData, inputPinsData, operation) {
-    this.updateOutputPinType(outputPinData.type);
-    this.updateInputPinTypes(inputPinsData);
-
-    if (this.node) {
-      // Set the operation while splatting out the input pin names:
-      try {
-        this.node.setOperation(
-          new Function(...this.getInputPinNames(), operation)
-        );
-        this.changeValue();
-      } catch (e) {
-        console.log("Error setting operation:", e);
-      }
-    } else {
-      console.log("Node is null when trying to set output pin.");
-    }
-  }
-
   inputResized() {
     // Set the input's width and height properties to the input elements width and height
     this.userPrompt.width = this.userPrompt.elt.offsetWidth;
-  }
-
-  changeValue() {
-    try {
-      this.valueIsValid = this.node.execute();
-    } catch (e) {
-      console.log(
-        "Error executing function:",
-        this.userDefinedFunction.value()
-      );
-      this.valueIsValid = false;
-    }
   }
 
   display() {

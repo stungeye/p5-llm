@@ -84,6 +84,10 @@ export default class GuiWindow {
     ];
   }
 
+  getGuiController() {
+    return this.controller;
+  }
+
   moveDelta(deltaX, deltaY) {
     this.x += deltaX;
     this.y += deltaY;
