@@ -56,11 +56,16 @@ export async function promptForFunction(userPrompt, provider = "openai") {
   const functionSignature = `function ${result.functionName}(${result.inputs
     .map((i) => i.name)
     .join(", ")})`;
+  const typedFunctionSignature = `(${result.inputs
+    .map((i) => `${i.name}:${i.type}`)
+    .join(", ")}) => ${result.output.name}:${result.output.type}`;
+
   const functionBody = (result.functionCode.match(/(?<=\{)[\s\S]*(?=\}$)/) || [
     "",
   ])[0].trim();
 
   result.functionSignature = functionSignature;
+  result.typedFunctionSignature = typedFunctionSignature;
   result.functionBody = functionBody;
   result.success = result.functionCode.startsWith(functionSignature);
 

@@ -10,39 +10,7 @@ export default class GuiControllerLlmFunction extends GuiController {
     super(p, guiConnectionManager);
 
     this.inferenceButton = this.p.createButton("🪄");
-    this.inferenceButton.mousePressed(async () => {
-      const result = await promptForFunction(
-        this.userPrompt.value(),
-        this.providerSelect.value()
-      );
-      if (result) {
-        console.log(result);
-        if (result.success) {
-          this.valueIsValid = true;
-
-          const newFunctionWindow = this.createNewWindow(
-            GuiControllerTypes.UserFunction,
-            result.functionName
-          );
-          const newGuiController = newFunctionWindow.getGuiController();
-
-          newGuiController.setOutputPinSelect(VsPinTypes[result.output.type]);
-          newGuiController.setUserDefinedFunction(result.functionBody);
-
-          result.inputs.forEach((inputPinData) => {
-            newGuiController.addInputPin(
-              VsPinTypes[inputPinData.type],
-              inputPinData.name
-            );
-          });
-
-          newGuiController.configureNode();
-        } else {
-          this.valueIsValid = false;
-          this.llmFunction.value("// Error: " + JSON.stringify(result));
-        }
-      }
-    });
+    this.inferenceButton.mousePressed(() => this.createFunctionNode());
 
     this.providerSelect = this.p.createSelect();
     Object.keys(LlmProviders).forEach((key) => {
@@ -54,11 +22,47 @@ export default class GuiControllerLlmFunction extends GuiController {
     this.userPrompt.style("resize", "none");
 
     this.llmFunction = this.p.createElement("textarea");
-    // make the textarea element non-resizable
+    // make the textarea element non-resizable and read-only
     this.llmFunction.style("resize", "none");
+    this.llmFunction.attribute("readonly", true);
 
     // create VsNode of type Function and configure it.
     this.node = new VsNode(VsNodeTypes.Function);
+  }
+
+  async createFunctionNode() {
+    const result = await promptForFunction(
+      this.userPrompt.value(),
+      this.providerSelect.value()
+    );
+
+    if (result && result.success) {
+      this.valueIsValid = true;
+
+      const newFunctionWindow = this.createNewWindow(
+        GuiControllerTypes.UserFunction,
+        result.functionName
+      );
+      const newGuiController = newFunctionWindow.getGuiController();
+
+      newGuiController.setOutputPinSelect(VsPinTypes[result.output.type]);
+      newGuiController.setUserDefinedFunction(result.functionBody);
+
+      result.inputs.forEach((inputPinData) => {
+        newGuiController.addInputPin(
+          VsPinTypes[inputPinData.type],
+          inputPinData.name
+        );
+      });
+
+      newGuiController.configureNode();
+      this.llmFunction.value(
+        `Successfully created ${result.functionName}!\n\n${result.typedFunctionSignature}`
+      );
+    } else {
+      this.valueIsValid = false;
+      this.llmFunction.value("Error: " + JSON.stringify(result));
+    }
   }
 
   inputResized() {

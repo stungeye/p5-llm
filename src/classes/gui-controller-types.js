@@ -11,7 +11,7 @@ const VsGuiControllerTypes = Object.freeze({
   },
   LLMFunction: {
     height: 260,
-    width: 340,
+    width: 450,
     factory: (p, connectionManager) =>
       new GuiControllerLlmFunction(p, connectionManager),
   },
