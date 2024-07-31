@@ -51,7 +51,7 @@ export default class GuiPin {
       let outputValue = "" + this.pin.getValue();
       let xOffset = 25;
 
-      if (this.pin.getType() === "object") {
+      if (this.pin.getType() === "object" || this.pin.getType() === "array") {
         outputValue = JSON.stringify(this.pin.getValue(), null, 2);
       }
 

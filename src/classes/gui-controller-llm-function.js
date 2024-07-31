@@ -19,7 +19,6 @@ export default class GuiControllerLlmFunction extends GuiController {
         console.log(result);
         if (result.success) {
           this.valueIsValid = true;
-          this.userPrompt.value("");
 
           const newFunctionWindow = this.createNewWindow(
             GuiControllerTypes.UserFunction,
