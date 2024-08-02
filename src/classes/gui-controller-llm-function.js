@@ -3,7 +3,8 @@ import GuiControllerTypes from "./gui-controller-types";
 import { VsPinTypes } from "./vs-pin-types";
 import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
-import { LlmProviders, promptForFunction } from "./llm-function-prompt";
+import { LlmProviders } from "./llm-providers";
+import promptForFunction from "./llm-function-prompt";
 
 export default class GuiControllerLlmFunction extends GuiController {
   constructor(p, guiConnectionManager) {
@@ -14,7 +15,7 @@ export default class GuiControllerLlmFunction extends GuiController {
 
     this.providerSelect = this.p.createSelect();
     Object.keys(LlmProviders).forEach((key) => {
-      this.providerSelect.option(key, LlmProviders[key]);
+      this.providerSelect.option(key);
     });
 
     this.userPrompt = this.p.createElement("textarea");
@@ -41,7 +42,7 @@ export default class GuiControllerLlmFunction extends GuiController {
 
       const newFunctionWindow = this.createNewWindow(
         GuiControllerTypes.UserFunction,
-        result.functionName
+        `${result.functionName} (${this.providerSelect.value()})`
       );
       const newGuiController = newFunctionWindow.getGuiController();
 
@@ -88,7 +89,7 @@ export default class GuiControllerLlmFunction extends GuiController {
     this.p.pop();
 
     // Reposition selects and button
-    this.inferenceButton.position(x + 290, y + 15);
+    this.inferenceButton.position(x + 310, y + 15);
     this.providerSelect.position(x + 200, y + 15);
 
     // Resize and reposition input

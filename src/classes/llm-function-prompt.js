@@ -1,29 +1,9 @@
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { ChatGroq } from "@langchain/groq";
-import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
+import { LlmProviders } from "./llm-providers";
 
-export const LlmProviders = Object.freeze({
-  OpenAi: "openai",
-  Groq: "groq",
-});
-
-export async function promptForFunction(userPrompt, provider = "openai") {
-  console.log(provider);
-  const model =
-    provider === "openai"
-      ? new ChatOpenAI({
-          temperature: 0,
-          model: "gpt-4o-mini",
-          apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-          cache: true,
-        })
-      : new ChatGroq({
-          temperature: 0,
-          model: "llama-3.1-70b-versatile",
-          apiKey: import.meta.env.VITE_GROQ_API_KEY,
-          cache: true,
-        });
+export default async function promptForFunction(userPrompt, provider) {
+  const model = LlmProviders[provider]();
 
   const functionSchema = z.object({
     functionName: z.string(),
@@ -44,7 +24,7 @@ export async function promptForFunction(userPrompt, provider = "openai") {
 
   const prompt = ChatPromptTemplate.fromMessages([
     ["system", "You are a helpful Javascript coding assistant."],
-    ["human", "The function I want to create will: " + userPrompt],
+    ["human", "The function I want you to create should: " + userPrompt],
   ]);
   const chain = prompt.pipe(modelWithStructuredOutput);
   const result = await chain.invoke({});
