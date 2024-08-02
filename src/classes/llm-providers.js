@@ -1,6 +1,9 @@
 import { ChatGroq } from "@langchain/groq";
 import { ChatOpenAI } from "@langchain/openai";
 
+// This may not be necessary if I can make the local-ai config prompt more generic:
+// - Description of the extract function: Return structured data as a response to a user request according to the provided json schema:
+// - Might need to provide a few more examples of how to use the extract function for the different types of nodes we create.
 // TODO: Next step is to return an object with keys:
 // - factory: a function that returns a new instance of the provider (e.g. new ChatOpenAI)
 //            Add a temperature parameter to the factory function, defaulted to 0.
