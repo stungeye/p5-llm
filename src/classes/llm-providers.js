@@ -1,6 +1,18 @@
 import { ChatGroq } from "@langchain/groq";
 import { ChatOpenAI } from "@langchain/openai";
 
+// TODO: Next step is to return an object with keys:
+// - factory: a function that returns a new instance of the provider (e.g. new ChatOpenAI)
+//            Add a temperature parameter to the factory function, defaulted to 0.
+// - function_request:
+//   - system_prompt: system prompt when for gui-controller-llm-function
+//   - user_prompt: User prefix-prompt for gui-controller-llm-function
+// - consumption_loop:
+//   - system_prompt: system prompt when for new LLM data-consumption gui controller
+//   - user_prompt: User prefix-prompt for new LLM data-consumption gui controller
+// - sample_and_generate:
+//   - system_prompt: system prompt when for new LLM sample-and-generate gui controller
+//   - user_prompt: User prefix-prompt for new LLM sample-and-generate gui controller
 export const LlmProviders = Object.freeze({
   OpenAi: () =>
     new ChatOpenAI({
