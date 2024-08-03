@@ -32,9 +32,10 @@ export default class GuiControllerLlmFunction extends GuiController {
   }
 
   async createFunctionNode() {
+    const llmProvider = this.providerSelect.value();
     const result = await promptForFunction(
       this.userPrompt.value(),
-      this.providerSelect.value()
+      llmProvider
     );
 
     if (result && result.success) {
@@ -42,7 +43,7 @@ export default class GuiControllerLlmFunction extends GuiController {
 
       const newFunctionWindow = this.createNewWindow(
         GuiControllerTypes.UserFunction,
-        `${result.functionName} (${this.providerSelect.value()})`
+        `${result.functionName} (${llmProvider})`
       );
       const newGuiController = newFunctionWindow.getGuiController();
 
