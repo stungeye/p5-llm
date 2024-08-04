@@ -1,6 +1,7 @@
 import GuiControllerConstant from "./gui-controller-constant";
 import GuiControllerUserFunction from "./gui-controller-user-function";
 import GuiControllerLlmFunction from "./gui-controller-llm-function";
+import GuiControllerLlmGenerator from "./gui-controller-llm-generator";
 
 const VsGuiControllerTypes = Object.freeze({
   UserFunction: {
@@ -14,6 +15,12 @@ const VsGuiControllerTypes = Object.freeze({
     width: 450,
     factory: (p, connectionManager) =>
       new GuiControllerLlmFunction(p, connectionManager),
+  },
+  LLMGenerator: {
+    height: 260,
+    width: 450,
+    factory: (p, connectionManager) =>
+      new GuiControllerLlmGenerator(p, connectionManager),
   },
   Constant: {
     height: 150,

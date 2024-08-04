@@ -53,12 +53,16 @@ export function parsePinValue(type, value) {
       }
       break;
     case VsPinTypes.Array:
+      console.log(`Parsing array value ${value}`);
       if (Array.isArray(value)) {
+        console.log(`Value is an array`);
         return value;
       } else if (typeof value === "string") {
+        console.log(`Value is a string`);
         try {
           let possibleArray = JSON.parse(value);
           if (Array.isArray(possibleArray)) {
+            console.log(`Parsed value is an array`);
             return possibleArray;
           }
         } catch (e) {

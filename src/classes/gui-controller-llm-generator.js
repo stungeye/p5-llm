@@ -4,14 +4,14 @@ import { VsPinTypes } from "./vs-pin-types";
 import VsNode from "./vs-node";
 import VsNodeTypes from "./vs-node-types";
 import { LlmProviders } from "./llm-providers";
-import promptForFunction from "./llm-function-prompt";
+import promptForData from "./llm-data-generation-prompt";
 
-export default class GuiControllerLlmFunction extends GuiController {
+export default class GuiControllerLlmGenerator extends GuiController {
   constructor(p, guiConnectionManager) {
     super(p, guiConnectionManager);
 
     this.inferenceButton = this.p.createButton("🪄");
-    this.inferenceButton.mousePressed(() => this.createFunctionNode());
+    this.inferenceButton.mousePressed(() => this.generateRequestedData());
 
     this.providerSelect = this.p.createSelect();
     Object.keys(LlmProviders).forEach((key) => {
@@ -26,37 +26,30 @@ export default class GuiControllerLlmFunction extends GuiController {
     // make the textarea element non-resizable and read-only
     this.llmFunction.style("resize", "none");
     this.llmFunction.attribute("readonly", true);
+
+    // create VsNode of type Function and configure it.
+    this.node = new VsNode(VsNodeTypes.Function);
   }
 
-  async createFunctionNode() {
+  async generateRequestedData() {
     const llmProvider = this.providerSelect.value();
-    const result = await promptForFunction(
-      this.userPrompt.value(),
-      llmProvider
-    );
+    const result = await promptForData(this.userPrompt.value(), llmProvider);
 
     if (result && result.success) {
       this.valueIsValid = true;
 
       const newFunctionWindow = this.createNewWindow(
-        GuiControllerTypes.UserFunction,
-        `${result.functionName} (${llmProvider})`
+        GuiControllerTypes.Constant,
+        `${result.generatedDataName} (${llmProvider})`
       );
       const newGuiController = newFunctionWindow.getGuiController();
 
-      newGuiController.setOutputPinSelect(VsPinTypes[result.output.type]);
-      newGuiController.setUserDefinedFunction(result.functionBody);
-
-      result.inputs.forEach((inputPinData) => {
-        newGuiController.addInputPin(
-          VsPinTypes[inputPinData.type],
-          inputPinData.name
-        );
-      });
-
+      newGuiController.setOutputPinSelect(VsPinTypes[result.generatedDataType]);
+      newGuiController.setInputValue(result.generatedDataJSON);
       newGuiController.configureNode();
+
       this.llmFunction.value(
-        `Successfully created ${result.functionName}!\n\n${result.typedFunctionSignature}`
+        `Successfully created ${result.generatedDataName} : ${result.generatedDataType}!\n\n${result.generatedDataJSON}`
       );
     } else {
       this.valueIsValid = false;
@@ -83,7 +76,7 @@ export default class GuiControllerLlmFunction extends GuiController {
     this.p.noStroke();
     this.p.fill(0);
     this.p.textSize(15);
-    this.p.text("Describe Required Action:", x + 20, y + 30);
+    this.p.text("Describe Required Data:", x + 20, y + 30);
     this.p.pop();
 
     // Reposition selects and button

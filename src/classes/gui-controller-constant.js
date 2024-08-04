@@ -7,12 +7,12 @@ export default class GuiControllerConstant extends GuiController {
   constructor(p, guiConnectionManager) {
     super(p, guiConnectionManager);
 
-    this.select = this.p.createSelect();
+    this.outputPinTypeSelect = this.p.createSelect();
     Object.keys(VsPinTypes).forEach((key) => {
-      this.select.option(key);
+      this.outputPinTypeSelect.option(key);
     });
 
-    this.select.changed(() => {
+    this.outputPinTypeSelect.changed(() => {
       this.configureNode();
     });
 
@@ -28,7 +28,7 @@ export default class GuiControllerConstant extends GuiController {
 
   configureNode() {
     // Sets the output pin of the node to the selected pin type
-    this.setOutputPin(VsPinTypes[this.select.value()]);
+    this.setOutputPin(VsPinTypes[this.outputPinTypeSelect.value()]);
 
     // Set the operation of the node to always return the input value.
     if (this.node) {
@@ -37,6 +37,16 @@ export default class GuiControllerConstant extends GuiController {
     } else {
       console.log("Node is null when trying to set output pin.");
     }
+  }
+
+  setOutputPinSelect(pinType) {
+    this.outputPinTypeSelect.value(
+      Object.keys(VsPinTypes).find((key) => VsPinTypes[key] === pinType)
+    );
+  }
+
+  setInputValue(value) {
+    this.input.value(value);
   }
 
   inputResized() {
@@ -63,7 +73,7 @@ export default class GuiControllerConstant extends GuiController {
     this.p.pop();
 
     // Reposition select
-    this.select.position(x + 20, y + 20);
+    this.outputPinTypeSelect.position(x + 20, y + 20);
 
     // Resize and reposition input
     this.input.position(x + 20, y + 60);
@@ -72,7 +82,7 @@ export default class GuiControllerConstant extends GuiController {
 
   destroy() {
     super.destroy();
-    this.select.remove();
+    this.outputPinTypeSelect.remove();
     this.input.remove();
   }
 }

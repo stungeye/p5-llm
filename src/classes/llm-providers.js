@@ -27,7 +27,7 @@ export const LlmProviders = Object.freeze({
   Groq: () =>
     new ChatGroq({
       temperature: 0,
-      model: "llama-3.1-70b-versatile",
+      model: "llama3-groq-70b-8192-tool-use-preview",
       apiKey: import.meta.env.VITE_GROQ_API_KEY,
       cache: true,
     }),
