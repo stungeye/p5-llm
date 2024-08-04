@@ -14,7 +14,7 @@ const sketch = (p) => {
 
   p.setup = () => {
     //testFunction();
-    p.createCanvas(p.windowWidth, p.windowHeight);
+    p.createCanvas(p.windowWidth * 2, p.windowHeight * 2);
 
     guiManager = new GuiManager(p);
     connectionManager = new VsConnectionManager();
@@ -44,32 +44,6 @@ const sketch = (p) => {
         guiManager
       )
     );
-    /*
-    guiManager.addWindow(
-      new GuiWindow(
-        p,
-        240,
-        50,
-        200,
-        150,
-        "Window 2",
-        new GuiController(p),
-        guiManager
-      )
-    );
-    guiManager.addWindow(
-      new GuiWindow(
-        p,
-        450,
-        50,
-        200,
-        150,
-        "Window 3",
-        new GuiController(p),
-        guiManager
-      )
-    );
-    */
   };
 
   p.draw = () => {
@@ -94,7 +68,7 @@ const sketch = (p) => {
   };
 
   p.windowResized = () => {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
+    p.resizeCanvas(p.windowWidth * 2, p.windowHeight * 2);
   };
 };
 

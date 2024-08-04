@@ -12,7 +12,7 @@ export default class GuiConnectionManager {
   }
 
   display() {
-    this.connectionManager.display(this.p, this.p.width - 300, 50);
+    this.connectionManager.display(this.p, this.p.windowWidth - 300, 50);
     if (this.creatingConnection) {
       this.p.push();
       this.p.stroke(0);

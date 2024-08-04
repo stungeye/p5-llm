@@ -4,6 +4,7 @@ import GuiControllerTypes from "./gui-controller-types";
 export default class GuiControllerSelector extends GuiController {
   constructor(p, guiConnectionManager) {
     super(p, guiConnectionManager);
+
     this.select = this.p.createSelect();
     Object.keys(GuiControllerTypes).forEach((key) => {
       this.select.option(key);
